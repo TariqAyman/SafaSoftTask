@@ -53,6 +53,8 @@ class User extends Authenticatable
 		'password',
 	];
 
+	protected $appends = ['count_item','total_cart'];
+
 	public function carts()
 	{
 		return $this->hasMany(Cart::class);
@@ -62,4 +64,18 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Order::class);
 	}
+
+    public function getCountItemAttribute()
+    {
+        return $this->carts()->count();
+	}
+
+    public function getTotalCartAttribute()
+    {
+        $total = 0;
+        foreach ($this->carts as $cart){
+            $total += ( $cart->item->price * $cart->quantity);
+        }
+        return $total;
+    }
 }

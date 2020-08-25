@@ -7,10 +7,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title') | {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -18,6 +19,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -49,9 +52,49 @@
                                 </li>
                             @endif
                         @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('items') }}">{{ __('Items') }}</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span class="badge badge-pill badge-danger">{{ \Auth::user()->count_item }}</span>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <div class="row total-header-section">
+                                        <div class="col-lg-6 col-sm-6 col-6">
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i> <span class="badge badge-pill badge-danger">{{ \Auth::user()->count_item }}</span>
+                                        </div>
+
+                                        <div class="col-lg-6 col-sm-6 col-6 total-section text-right">
+                                            <p>Total: <span class="text-info">$ {{ \Auth::user()->total_cart }}</span></p>
+                                        </div>
+                                    </div>
+
+
+                                        @foreach($carts as $cart)
+                                            <div class="row cart-detail">
+                                                <div class="col-lg-4 col-sm-4 col-4 cart-detail-img">
+                                                    <img src="https://picsum.photos/seed/picsum/200/300"/>
+                                                </div>
+                                                <div class="col-lg-8 col-sm-8 col-8 cart-detail-product">
+                                                    <p>{{ $cart->item->name }}</p>
+                                                    <span class="price text-info"> {{ $cart->item->price }} $ </span> <span class="count"> Quantity:{{ $cart->quantity }}</span>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
+                                    <div class="row">
+                                        <div class="col-lg-12 col-sm-12 col-12 text-center checkout">
+                                            <a href="{{ url('cart') }}" class="btn btn-primary">View all</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->first_name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -76,5 +119,6 @@
             @yield('content')
         </main>
     </div>
+    @yield('scripts')
 </body>
 </html>

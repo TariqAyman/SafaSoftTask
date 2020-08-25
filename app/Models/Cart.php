@@ -36,6 +36,8 @@ class Cart extends Model
 		'quantity'
 	];
 
+	protected $appends = ['total'];
+
 	public function item()
 	{
 		return $this->belongsTo(Item::class);
@@ -44,5 +46,10 @@ class Cart extends Model
 	public function user()
 	{
 		return $this->belongsTo(User::class);
+	}
+
+    public function getTotalAttribute()
+    {
+        return $this->item->price * $this->attributes['quantity'];
 	}
 }
